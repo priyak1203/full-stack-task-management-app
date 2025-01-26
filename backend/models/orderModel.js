@@ -10,6 +10,8 @@ const SingleOrderItemSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  name: String,
+  price: Number,
 });
 
 const OrderSchema = new mongoose.Schema(
@@ -26,7 +28,7 @@ const OrderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'completed', 'canceled'],
+      enum: ['pending', 'completed', 'cancelled'],
       default: 'pending',
     },
   },

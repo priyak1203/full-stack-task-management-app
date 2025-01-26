@@ -1,4 +1,4 @@
-const { z } = require('zod');
+const { z, string } = require('zod');
 const { BadRequestError } = require('../errors/customError');
 const { isValidObjectId } = require('mongoose');
 
@@ -88,10 +88,36 @@ const validateMongoId = (id) => {
   return isValid;
 };
 
+/* ====================================================================== 
+    ORDER INPUT VALIDATIONS
+========================================================================== */
+
+const singleOrderItemSchema = z.object({
+  menuItemId: z.string({ required_error: 'Missing menu item id' }),
+  quantity: z
+    .number({ required_error: 'Missing quantity value' })
+    .min(0, { message: 'Quantity must be at least 0' }),
+});
+
+const validateSingleOrderItem = (data) => {
+  return validateWithZodSchema(singleOrderItemSchema, data);
+};
+
+const validateOrderItems = (items) => {
+  const itemsList = items.map((item) => {
+    const singleItem = validateSingleOrderItem(item);
+    validateMongoId(item.menuItemId);
+    return singleItem;
+  });
+
+  return itemsList;
+};
+
 module.exports = {
   validateAddItem,
   validateMongoId,
   validateUpdateItem,
   validateRegisterUserInput,
   validateLoginUserInput,
+  validateOrderItems,
 };

@@ -12,11 +12,6 @@ const getAllMenuItems = async (req, res) => {
   const items = await Menu.find({});
   const count = items.length;
 
-  // Throw error if there are no items
-  if (count < 1) {
-    throw new NotFoundError('There are no menu items');
-  }
-
   res.status(StatusCodes.OK).json({ count, items });
 };
 
