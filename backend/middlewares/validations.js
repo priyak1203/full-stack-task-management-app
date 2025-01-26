@@ -12,13 +12,43 @@ const validateWithZodSchema = (schema, data) => {
   return result.data;
 };
 
+/* ====================================================================== 
+    AUTH INPUT VALIDATIONS
+========================================================================== */
+const registerUserSchema = z.object({
+  username: z
+    .string({ required_error: 'Please provide username' })
+    .min(3, { message: 'Username must be at least 3 characters' })
+    .max(20, { message: 'Username must not be more than 20 characters' }),
+  password: z
+    .string({ required_error: 'Please provide password' })
+    .min(6, { message: 'Password must be at least 6 characters' }),
+});
+
+const validateRegisterUserInput = (data) => {
+  return validateWithZodSchema(registerUserSchema, data);
+};
+
+const loginUserSchema = z.object({
+  username: z.string({ required_error: 'Please enter username' }),
+  password: z.string({ required_error: 'Please enter password' }),
+});
+
+const validateLoginUserInput = (data) => {
+  return validateWithZodSchema(loginUserSchema, data);
+};
+
+/* ====================================================================== 
+    MENU INPUT VALIDATIONS
+========================================================================== */
+
 // menu item schema
 const addItemSchema = z.object({
   name: z
     .string({
       required_error: 'Please provide menu item name',
     })
-    .min(3, { message: 'Name must be atleast 3 characters' }),
+    .min(3, { message: 'Name must be at least 3 characters' }),
   price: z
     .number({ required_error: 'Please provide menu item price' })
     .min(10, { message: 'Price must be atleast 10' }),
@@ -62,4 +92,6 @@ module.exports = {
   validateAddItem,
   validateMongoId,
   validateUpdateItem,
+  validateRegisterUserInput,
+  validateLoginUserInput,
 };
