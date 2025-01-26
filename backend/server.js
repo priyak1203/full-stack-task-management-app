@@ -20,6 +20,9 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// middlewares
+app.use(express.json());
+
 // routes
 app.get('/', (req, res) => {
   res.send('Welcome To FDS');
