@@ -4,6 +4,12 @@ const morgan = require('morgan');
 require('express-async-errors');
 require('dotenv').config();
 
+// other packages
+const helmet = require('helmet');
+const xss = require('xss-clean');
+const cors = require('cors');
+const mongoSanitize = require('express-mongo-sanitize');
+
 const app = express();
 
 // routers
@@ -20,15 +26,24 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// rate limiter
+const apiLimiter = require('./middlewares/apiLimiter');
+
 // middlewares
+app.set('trust proxy', 1);
+app.use(helmet());
+app.use(cors());
+app.use(xss());
+app.use(mongoSanitize());
+
 app.use(express.json());
 
 // routes
-app.get('/', (req, res) => {
-  res.send('Welcome To FDS');
+app.get('/', apiLimiter, (req, res) => {
+  res.send('Welcome To Food Delivery System');
 });
 
-app.use('/api/v1', authRouter, menuRouter, orderRouter);
+app.use('/api/v1', apiLimiter, authRouter, menuRouter, orderRouter);
 
 // Not found route middleware
 app.use(notFoundHandler);
